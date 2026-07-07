@@ -4,9 +4,9 @@
   "description": "",
   "main": "Server.js",
   "scripts": {
-    "dev": "nodemon server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev": "tsx watch server.ts",
+     "build": "tsc",
+     "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
