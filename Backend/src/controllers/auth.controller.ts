@@ -1,33 +1,78 @@
-import type {Request ,Response} from 'express'
-import User from '../models/User.model.js'
+import type { Request, Response } from "express";
+import User from "../models/User.model.js";
 
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
-import type { promises } from 'node:dns'
-import type { Error } from 'mongoose'
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 interface RegisterBody {
-    username:string,
-    email:string,
-    password:string
+  username: string;
+  email: string;
+  password: string;
 }
 
-export const register = async (req:Request<unknown,unknown,RegisterBody>,res:Response):promise<void>=>{
-    try {
-        const {username , email , password} = req.body;
-        if(!username || !email || !password){
-            res.status(400).json({message:"All field are required"});
-            return;
+export const register = async (
+  req: Request<unknown, unknown, RegisterBody>,
+  res: Response
+): Promise<void> => {
+  try {
+    const { username, email, password } = req.body;
 
-        }
-        const existUser = await User.findOne({ $or: [{ email }, { username }] })
-        if(existUser){
-            res.status(400).json({message :"User already exist "})
-        }
-
-        
-    } catch (error) {
-        res.status(500).json.({message:"Something went wrong ",error:(err as Error).message})
-        
+    if (!username || !email || !password) {
+      res.status(400).json({ message: "All fields are required" });
+      return;
     }
-}
+
+    const existUser = await User.findOne({
+      $or: [{ email }, { username }],
+    });
+
+    if (existUser) {
+      res.status(400).json({ message: "User already exists" });
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      username,
+      email,
+      passwordHash,
+    });
+
+    const jwtSecret = process.env.JWT_SECRET;
+
+    if (!jwtSecret) {
+      res.status(500).json({ message: "Server misconfiguration" });
+      return;
+    }
+
+    const token = jwt.sign(
+      { userId: newUser._id },
+      jwtSecret,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.status(201).json({
+      token,
+      user: {
+        id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+        rating: newUser.rating,
+      },
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        message: "Something went wrong",
+        error: error.message,
+      });
+    } else {
+      res.status(500).json({
+        message: "Something went wrong",
+      });
+    }
+  }
+};
