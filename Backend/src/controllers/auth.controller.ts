@@ -82,3 +82,8 @@ interface loginBody{
     password:string
 };
 
+
+export const login= async ( req:Request<unknown, unknown, RegisterBody>,
+    res:Response
+)
+
