@@ -7,12 +7,6 @@ import jwt from "jsonwebtoken";
 import { isMainThread } from "node:worker_threads";
 
 interface RegisterBody {
-  username: string;
-  email: string;
-  password: string;
-}
-
-export const register = async (
   req: Request<unknown, unknown, RegisterBody>,
   res: Response
 ): Promise<void> => {
