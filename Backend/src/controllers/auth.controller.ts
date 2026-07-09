@@ -87,9 +87,9 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
     res:Response
 ): Promise<void> => {
     try {
-        const {email,password}= req.body;
+        const {email,hashpassword}= req.body;
 
-        if(!email || !password){
+        if(!email || !hashpassword){
             res.status(400).json({message:"all the instance is required"})
             return;
         }
@@ -98,6 +98,8 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
             res.status(401).json({message:"User not found"})
             return;
         }
+
+        const isMtch = await bcrypt.compare(password,User.hashpassword)
     } catch (error) {
           if (error instanceof Error) {
       res.status(500).json({
