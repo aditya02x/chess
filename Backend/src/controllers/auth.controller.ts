@@ -85,5 +85,20 @@ interface loginBody{
 
 export const login= async ( req:Request<unknown, unknown, RegisterBody>,
     res:Response
-)
+): Promise<void> => {
+    try {
+        
+    } catch (error) {
+          if (error instanceof Error) {
+      res.status(500).json({
+        message: "Something went wrong",
+        error: error.message,
+      });
+    } else {
+      res.status(500).json({
+        message: "Something went wrong",
+      });
+    }
+    }
+}
 
