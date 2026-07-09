@@ -3,6 +3,7 @@ import User from "../models/User.model.js";
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { isMainThread } from "node:worker_threads";
 
 interface RegisterBody {
   username: string;
@@ -99,7 +100,11 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
             return;
         }
 
-        const isMtch = await bcrypt.compare(password,User.hashpassword)
+        const isMtch{ = await bcrypt.compare(password,User.hashpassword);
+        if(!isMatch){
+            res.status(401).json({message:"Incorrect password"});
+            return
+        }
     } catch (error) {
           if (error instanceof Error) {
       res.status(500).json({
