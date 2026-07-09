@@ -76,3 +76,9 @@ export const register = async (
     }
   }
 };
+
+interface loginBody{
+    email:string,
+    password:string
+};
+
