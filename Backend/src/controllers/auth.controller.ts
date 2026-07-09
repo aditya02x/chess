@@ -94,7 +94,7 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
             return;
         }
         const checkuser = await User.findOne({email})
-        if(!email){
+        if(!checkuser){
             res.status(401).json({message:"User not found"})
             return;
         }
