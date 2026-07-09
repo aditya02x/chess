@@ -113,6 +113,18 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
       return;
     }
 
+    const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: "7d" });
+
+    res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        rating: user.rating,
+      },
+    });
+
 
 
     } catch (error) {
