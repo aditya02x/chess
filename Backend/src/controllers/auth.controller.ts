@@ -106,9 +106,15 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
       res.status(401).json({ message: "Invalid credentials" });
       return;
     }
-
-
     
+     const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      res.status(500).json({ message: "Server misconfiguration" });
+      return;
+    }
+
+
+
     } catch (error) {
           if (error instanceof Error) {
       res.status(500).json({
