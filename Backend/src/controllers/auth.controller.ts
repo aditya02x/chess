@@ -88,23 +88,27 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
     res:Response
 ): Promise<void> => {
     try {
-        const {email,hashpassword}= req.body;
+         const { email, password } = req.body;
 
-        if(!email || !hashpassword){
-            res.status(400).json({message:"all the instance is required"})
-            return;
-        }
-        const checkuser = await User.findOne({email})
-        if(!checkuser){
-            res.status(401).json({message:"User not found"})
-            return;
-        }
+    if (!email || !password) {
+      res.status(400).json({ message: "All fields are required" });
+      return;
+    }
 
-        const isMtch{ = await bcrypt.compare(password,User.hashpassword);
-        if(!isMatch){
-            res.status(401).json({message:"Incorrect password"});
-            return
-        }
+    const user = await User.findOne({ email });
+    if (!user) {
+      res.status(401).json({ message: "Invalid credentials" });
+      return;
+    }
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      res.status(401).json({ message: "Invalid credentials" });
+      return;
+    }
+
+
+    
     } catch (error) {
           if (error instanceof Error) {
       res.status(500).json({
