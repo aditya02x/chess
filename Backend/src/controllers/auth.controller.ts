@@ -87,7 +87,17 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
     res:Response
 ): Promise<void> => {
     try {
-        
+        const {email,password}= req.body;
+
+        if(!email || !password){
+            res.status(400).json({message:"all the instance is required"})
+            return;
+        }
+        const checkuser = await User.findOne({email})
+        if(!email){
+            res.status(401).json({message:"User not found"})
+            return;
+        }
     } catch (error) {
           if (error instanceof Error) {
       res.status(500).json({
