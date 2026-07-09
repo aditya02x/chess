@@ -132,3 +132,4 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
     }
 }
 
+export const getMe
