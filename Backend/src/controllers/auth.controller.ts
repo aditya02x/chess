@@ -7,6 +7,12 @@ import jwt from "jsonwebtoken";
 import { isMainThread } from "node:worker_threads";
 
 interface RegisterBody {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export const register = async (
   req: Request<unknown, unknown, RegisterBody>,
   res: Response
 ): Promise<void> => {
@@ -127,4 +133,15 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
     }
 }
 
-export const getMe
+export const getMe = async (req:AuthRequest,res:Response):promise<void>=>{
+    try {
+        const user = await User.findById(req.userId).select("-passwordHash")
+        if(!user){
+            res.status(400).json({message:"User not dound"})
+        }
+        
+    } catch (error) {
+        res.status(500).json({message:"Server Error ",error:(error as Error).message});
+        
+    }
+}
