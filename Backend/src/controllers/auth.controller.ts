@@ -127,17 +127,8 @@ export const login= async ( req:Request<unknown, unknown, RegisterBody>,
 
 
 
-    } catch (error) {
-          if (error instanceof Error) {
-      res.status(500).json({
-        message: "Something went wrong",
-        error: error.message,
-      });
-    } else {
-      res.status(500).json({
-        message: "Something went wrong",
-      });
-    }
+    } catch (err) {
+        res.status(500).json({message:"Something went wrong ", error: (err as Error).message})
     }
 }
 
